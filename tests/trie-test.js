@@ -25,17 +25,17 @@ describe('Trie', () => {
     expect(trie.children).to.deep.equal({});
   })
 
-  describe.skip('Insert', () => {
+  describe.only('Insert', () => {
 
-    it('should be able to increment the count', () => {
+    it.skip('should be able to increment the count', () => {
       expect(trie.count).to.equal(0);
       expect(trie.insert('pizza'));
       expect(trie.count).to.equal(1);
     })
 
     it('should add the word', () => {
-    trie.insert('tacocat')
-    trie.insert('pizza')
+    // trie.insert('tacocat')
+    // trie.insert('pizza')
     trie.insert('cat')
     expect(trie.children['c']).to.exist
     expect(trie.children['c'].children['a']).to.exist
@@ -45,7 +45,7 @@ describe('Trie', () => {
     })
   })
 
-  describe.skip('Suggest', () => {
+  describe('Suggest', () => {
 
     beforeEach( () => {
       // trie.insert('piano')
@@ -70,7 +70,7 @@ describe('Trie', () => {
     })
   })
 
-  describe.skip('populate', () => {
+  describe('populate', () => {
     beforeEach( () => {
       trie.populate(dictionary)
     })
@@ -80,19 +80,33 @@ describe('Trie', () => {
   })
 
 
-  describe.only('select', () => {
+  describe('select', () => {
 
     beforeEach( () => {
         trie.populate(dictionary)
         trie.suggest('piz')
     })
 
-    it('should select a word', () => {
+    it('should prioritize previously selected words', () => {
       // let results = trie.suggest('piz')
       expect(trie.suggest('piz')).to.eql(["pize", "pizza", "pizzeria", "pizzicato", "pizzle"])
       trie.select('pizzeria')
       trie.suggest('piz')
       expect(trie.suggest('piz')).to.eql(["pizzeria", "pize", "pizza", "pizzicato", "pizzle"])
     })
+  })
+
+
+  describe('Delete', () => {
+    beforeEach( () => {
+      trie.populate(dictionary)
+      trie.suggest('piz') 
+    })
+
+    it('should delete a word from suggestions', () => {
+      trie.delete("pize");
+      trie.suggest('piz');
+      expect(trie.suggest('piz')).to.eql(["pizza", "pizzeria", "pizzicato", "pizzle"])
+    })   
   })
 })

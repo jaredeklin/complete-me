@@ -25,9 +25,9 @@ describe('Trie', () => {
     expect(trie.children).to.deep.equal({});
   })
 
-  describe.only('Insert', () => {
+  describe('Insert', () => {
 
-    it.skip('should be able to increment the count', () => {
+    it('should be able to increment the count', () => {
       expect(trie.count).to.equal(0);
       expect(trie.insert('pizza'));
       expect(trie.count).to.equal(1);
@@ -41,7 +41,6 @@ describe('Trie', () => {
     expect(trie.children['c'].children['a']).to.exist
     expect(trie.children['c'].children['a'].children['t']).to.exist
     expect(trie.children['c'].children['a'].children['t'].completeWord).to.be.true
-    // console.log(JSON.stringify(trie, null, 4))
     })
   })
 
@@ -52,6 +51,7 @@ describe('Trie', () => {
       // trie.insert('pizza')
       // trie.insert('pizzas')
       // trie.insert('dog')
+      // trie.insert('pizzicato')
       trie.populate(dictionary)
     })
     it('should return an array of suggested words', () => {
@@ -62,11 +62,13 @@ describe('Trie', () => {
       // let check2 = results.some(result => result === 'pizzas')
       // let check3 = results.some(result => result === 'piano')
       // let check4 = results.some(result => result === 'dog')
+      // let check5 = results.some(result => result === 'pizzicato')
 
       // expect(check1).to.be.true
       // expect(check2).to.be.true
       // expect(check3).to.be.true
       // expect(check4).to.be.false
+      // expect(check5).to.be.true
     })
   })
 
@@ -88,7 +90,6 @@ describe('Trie', () => {
     })
 
     it('should prioritize previously selected words', () => {
-      // let results = trie.suggest('piz')
       expect(trie.suggest('piz')).to.eql(["pize", "pizza", "pizzeria", "pizzicato", "pizzle"])
       trie.select('pizzeria')
       trie.suggest('piz')

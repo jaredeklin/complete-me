@@ -20,8 +20,8 @@ describe('NODE', () => {
     expect(node.data).to.equal('pizza')
   })
 
-  it('should default popularity to 0', () => {
-    expect(node.popularity).to.equal(0);
+  it('should default priority to 0', () => {
+    expect(node.priority).to.equal(0);
   })
 
   it('should default children object to empty', () => {

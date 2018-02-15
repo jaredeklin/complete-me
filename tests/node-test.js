@@ -8,7 +8,7 @@ describe('NODE', () => {
     node = new Node('pizza')
   })
 
-  it('should be a thing', () => {
+  it('should exist', () => {
     expect(node).to.exist
   })
 

@@ -34,49 +34,71 @@ describe('Trie', () => {
     })
 
     it('should add the word', () => {
-    // trie.insert('tacocat')
-    // trie.insert('pizza')
-    trie.insert('cat')
-    expect(trie.children['c']).to.exist
-    expect(trie.children['c'].children['a']).to.exist
-    expect(trie.children['c'].children['a'].children['t']).to.exist
-    expect(trie.children['c'].children['a'].children['t'].completeWord).to.be.true
+      trie.insert('cat')
+      expect(trie.children['c']).to.exist
+      expect(trie.children['c'].children['a']).to.exist
+      expect(trie.children['c'].children['a'].children['t']).to.exist
+      expect(trie.children['c'].children['a'].children['t'].completeWord).to.be.true
+    })
+
+    it('should not increment the word count if the word already exists', () => {
+      trie.insert('cat');
+      expect(trie.count).to.equal(1);
+      trie.insert('cat');
+      expect(trie.count).to.equal(1);
     })
   })
 
   describe('Suggest', () => {
 
-    beforeEach( () => {
-      // trie.insert('piano')
-      // trie.insert('pizza')
-      // trie.insert('pizzas')
-      // trie.insert('dog')
-      // trie.insert('pizzicato')
-      trie.populate(dictionary)
-    })
     it('should return an array of suggested words', () => {
+      trie.populate(dictionary)
       let results = trie.suggest('piz')
       expect(results).to.eql(["pize", "pizza", "pizzeria", "pizzicato", "pizzle"])
-      // expect(results).to.eql(['pizza','pizzas'])
-      // let check1 = results.some(result => result === 'pizza')
-      // let check2 = results.some(result => result === 'pizzas')
-      // let check3 = results.some(result => result === 'piano')
-      // let check4 = results.some(result => result === 'dog')
-      // let check5 = results.some(result => result === 'pizzicato')
+    })
 
-      // expect(check1).to.be.true
-      // expect(check2).to.be.true
-      // expect(check3).to.be.true
-      // expect(check4).to.be.false
-      // expect(check5).to.be.true
+    it('should prioritize previously selected words on suggestion', () => {
+      trie.populate(dictionary)
+      trie.suggest('piz')
+      expect(trie.suggest('piz')).to.eql(["pize", "pizza", "pizzeria", "pizzicato", "pizzle"])
+      trie.select('pizzeria')
+      trie.suggest('piz')
+      expect(trie.suggest('piz')).to.eql(["pizzeria", "pize", "pizza", "pizzicato", "pizzle"])
+    })
+
+    it('should only return array of valid suggestions', () => {
+
+      trie.insert('piano')
+      trie.insert('pizza')
+      trie.insert('pizzas')
+      trie.insert('dog')
+      trie.insert('pizzicato')
+
+      let results = trie.suggest('piz')
+
+      let check1 = results.some(result => result === 'pizza')
+      let check2 = results.some(result => result === 'pizzas')
+      let check3 = results.some(result => result === 'piano')
+      let check4 = results.some(result => result === 'dog')
+      let check5 = results.some(result => result === 'pizzicato')
+
+      expect(check1).to.be.true
+      expect(check2).to.be.true
+      expect(check3).to.be.false
+      expect(check4).to.be.false
+      expect(check5).to.be.true
     })
   })
 
   describe('populate', () => {
-    beforeEach( () => {
-      trie.populate(dictionary)
+
+    it('should populate the trie with a word' , () => {
+      trie.insert('dogg')
+      expect(trie.count).to.equal(1)
     })
+
     it('should populate the trie with so many word' , () => {
+      trie.populate(dictionary)
       expect(trie.count).to.equal(235886)
     })
   })
@@ -85,15 +107,13 @@ describe('Trie', () => {
   describe('select', () => {
 
     beforeEach( () => {
-        trie.populate(dictionary)
-        trie.suggest('piz')
+      trie.populate(dictionary)
     })
 
-    it('should prioritize previously selected words', () => {
-      expect(trie.suggest('piz')).to.eql(["pize", "pizza", "pizzeria", "pizzicato", "pizzle"])
-      trie.select('pizzeria')
-      trie.suggest('piz')
-      expect(trie.suggest('piz')).to.eql(["pizzeria", "pize", "pizza", "pizzicato", "pizzle"])
+    it('should increment the priority when selected', () => {
+      expect(trie.children['d'].children['o'].children['g'].priority).to.equal(0);
+      trie.select('dog')
+      expect(trie.children['d'].children['o'].children['g'].priority).to.equal(1);
     })
   })
 
